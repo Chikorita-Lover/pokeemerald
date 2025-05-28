@@ -275,6 +275,8 @@ static void BufferLeftColumnStats(void);
 static void PrintLeftColumnStats(void);
 static void BufferRightColumnStats(void);
 static void PrintRightColumnStats(void);
+static void PrintLeftColumnString(const u8 *, u8, s8);
+static void PrintRightColumnString(const u8 *, u8, s8);
 static void PrintExpPointsNextLevel(void);
 static void PrintBattleMoves(void);
 static void Task_PrintBattleMoves(u8);
@@ -2805,7 +2807,6 @@ static void PrintPageNamesAndStats(void)
 {
     int stringXPos;
     int iconXPos;
-    int statsXPos;
 
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_INFO_TITLE, gText_PkmnInfo, 2, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_TITLE, gText_PkmnSkills, 2, 1, 0, 1);
@@ -2835,18 +2836,6 @@ static void PrintPageNamesAndStats(void)
 
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_INFO_RENTAL, gText_RentalPkmn, 0, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_INFO_TYPE, gText_TypeSlash, 0, 1, 0, 0);
-    statsXPos = 6 + GetStringCenterAlignXOffset(FONT_NORMAL, gText_HP4, 42);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT, gText_HP4, statsXPos, 1, 0, 1);
-    statsXPos = 6 + GetStringCenterAlignXOffset(FONT_NORMAL, gText_Attack3, 42);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT, gText_Attack3, statsXPos, 17, 0, 1);
-    statsXPos = 6 + GetStringCenterAlignXOffset(FONT_NORMAL, gText_Defense3, 42);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT, gText_Defense3, statsXPos, 33, 0, 1);
-    statsXPos = 2 + GetStringCenterAlignXOffset(FONT_NORMAL, gText_SpAtk4, 36);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT, gText_SpAtk4, statsXPos, 1, 0, 1);
-    statsXPos = 2 + GetStringCenterAlignXOffset(FONT_NORMAL, gText_SpDef4, 36);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT, gText_SpDef4, statsXPos, 17, 0, 1);
-    statsXPos = 2 + GetStringCenterAlignXOffset(FONT_NORMAL, gText_Speed2, 36);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT, gText_Speed2, statsXPos, 33, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP, gText_ExpPoints, 6, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP, gText_NextLv, 6, 17, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATUS, gText_Status, 2, 1, 0, 1);
@@ -3387,6 +3376,10 @@ static void BufferLeftColumnStats(void)
 
 static void PrintLeftColumnStats(void)
 {
+    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.nature];
+    PrintLeftColumnString(gText_HP4, 1, 0);
+    PrintLeftColumnString(gText_Attack3, 17, natureMod[STAT_ATK - 1]);
+    PrintLeftColumnString(gText_Defense3, 33, natureMod[STAT_DEF - 1]);
     PrintTextOnWindow(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_STATS_LEFT), gStringVar4, 4, 1, 0, 0);
 }
 
@@ -3405,7 +3398,25 @@ static void BufferRightColumnStats(void)
 
 static void PrintRightColumnStats(void)
 {
+    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.nature];
+    PrintRightColumnString(gText_SpAtk4, 1, natureMod[STAT_SPATK - 1]);
+    PrintRightColumnString(gText_SpDef4, 17, natureMod[STAT_SPDEF - 1]);
+    PrintRightColumnString(gText_Speed2, 33, natureMod[STAT_SPEED - 1]);
     PrintTextOnWindow(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_STATS_RIGHT), gStringVar4, 2, 1, 0, 0);
+}
+
+static void PrintLeftColumnString(const u8 *string, u8 y, s8 natureMod)
+{
+    int statsXPos = 6 + GetStringCenterAlignXOffset(FONT_NORMAL, string, 42);
+    u8 colorId = natureMod > 0 ? 0x6 : natureMod < 0 ? 0x7 : 0x1;
+    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT, string, statsXPos, y, 0, colorId);
+}
+
+static void PrintRightColumnString(const u8 *string, u8 y, s8 natureMod)
+{
+    int statsXPos = 2 + GetStringCenterAlignXOffset(FONT_NORMAL, string, 36);
+    u8 colorId = natureMod > 0 ? 0x6 : natureMod < 0 ? 0x7 : 0x1;
+    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT, string, statsXPos, y, 0, colorId);
 }
 
 static void PrintExpPointsNextLevel(void)
