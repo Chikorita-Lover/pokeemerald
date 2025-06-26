@@ -68,7 +68,8 @@ enum {
 
 enum {
     WIN_MSG,
-    WIN_BUTTON_LABEL,
+    WIN_BUTTON_A_LABEL,
+    WIN_BUTTON_B_LABEL,
 };
 
 static const u32 sHand_Gfx[] = INCBIN_U32("graphics/wallclock/hand.4bpp.lz");
@@ -85,14 +86,23 @@ static const struct WindowTemplate sWindowTemplates[] =
         .paletteNum = 14,
         .baseBlock = 512
     },
-    [WIN_BUTTON_LABEL] = {
+    [WIN_BUTTON_A_LABEL] = {
         .bg = 2,
         .tilemapLeft = 24,
-        .tilemapTop = 16,
+        .tilemapTop = 15,
         .width = 6,
         .height = 2,
         .paletteNum = 12,
         .baseBlock = 560
+    },
+    [WIN_BUTTON_B_LABEL] = {
+        .bg = 2,
+        .tilemapLeft = 22,
+        .tilemapTop = 17,
+        .width = 6,
+        .height = 2,
+        .paletteNum = 12,
+        .baseBlock = 572
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -720,8 +730,10 @@ void CB2_StartWallClock(void)
 
     WallClockInit();
 
-    AddTextPrinterParameterized(WIN_BUTTON_LABEL, FONT_NORMAL, gText_Confirm3, 0, 1, 0, NULL);
-    PutWindowTilemap(WIN_BUTTON_LABEL);
+    AddTextPrinterParameterized(WIN_BUTTON_A_LABEL, FONT_NORMAL, gText_Confirm3, 0, 1, 0, NULL);
+    AddTextPrinterParameterized(WIN_BUTTON_A_LABEL, FONT_NORMAL, gText_Cancel4, 0, 1, 0, NULL);
+    PutWindowTilemap(WIN_BUTTON_A_LABEL);
+    PutWindowTilemap(WIN_BUTTON_B_LABEL);
     ScheduleBgCopyTilemapToVram(2);
 }
 
@@ -768,8 +780,10 @@ void CB2_ViewWallClock(void)
 
     WallClockInit();
 
-    AddTextPrinterParameterized(WIN_BUTTON_LABEL, FONT_NORMAL, gText_Cancel4, 0, 1, 0, NULL);
-    PutWindowTilemap(WIN_BUTTON_LABEL);
+    AddTextPrinterParameterized(WIN_BUTTON_A_LABEL, FONT_NORMAL, gText_Set, 0, 1, 0, NULL);
+    AddTextPrinterParameterized(WIN_BUTTON_B_LABEL, FONT_NORMAL, gText_Cancel4, 0, 1, 0, NULL);
+    PutWindowTilemap(WIN_BUTTON_A_LABEL);
+    PutWindowTilemap(WIN_BUTTON_B_LABEL);
     ScheduleBgCopyTilemapToVram(2);
 }
 
@@ -846,6 +860,8 @@ static void Task_SetClock_HandleConfirmInput(u8 taskId)
     {
     case 0: // YES
         PlaySE(SE_SELECT);
+        ClearStdWindowAndFrameToTransparent(WIN_MSG, FALSE);
+        ClearWindowTilemap(WIN_MSG);
         gTasks[taskId].func = Task_SetClock_Confirmed;
         break;
     case 1: // NO
@@ -861,8 +877,10 @@ static void Task_SetClock_HandleConfirmInput(u8 taskId)
 static void Task_SetClock_Confirmed(u8 taskId)
 {
     RtcInitLocalTimeOffset(gTasks[taskId].tHours, gTasks[taskId].tMinutes);
-    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-    gTasks[taskId].func = Task_SetClock_Exit;
+    LZ77UnCompVram(gWallClockView_Tilemap, (u16 *)BG_SCREEN_ADDR(7));
+    AddTextPrinterParameterized(WIN_BUTTON_A_LABEL, FONT_NORMAL, gText_Set, 0, 1, 0, NULL);
+    PutWindowTilemap(WIN_BUTTON_A_LABEL);
+    gTasks[taskId].func = Task_ViewClock_HandleInput;
 }
 
 static void Task_SetClock_Exit(u8 taskId)
@@ -883,7 +901,16 @@ static void Task_ViewClock_WaitFadeIn(u8 taskId)
 static void Task_ViewClock_HandleInput(u8 taskId)
 {
     InitClockWithRtc(taskId);
-    if (JOY_NEW(A_BUTTON | B_BUTTON))
+    if (JOY_NEW(A_BUTTON))
+    {
+        LZ77UnCompVram(gWallClockStart_Tilemap, (u16 *)BG_SCREEN_ADDR(7));
+        ClearStdWindowAndFrameToTransparent(WIN_BUTTON_A_LABEL, FALSE);
+        // ClearWindowTilemap(WIN_MSG);
+        AddTextPrinterParameterized(WIN_BUTTON_A_LABEL, FONT_NORMAL, gText_Confirm3, 0, 1, 0, NULL);
+        PutWindowTilemap(WIN_BUTTON_A_LABEL);
+        gTasks[taskId].func = Task_SetClock_HandleInput;
+    }
+    else if (JOY_NEW(B_BUTTON))
         gTasks[taskId].func = Task_ViewClock_FadeOut;
 }
 

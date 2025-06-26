@@ -1769,6 +1769,7 @@ const u8 gText_Anna[] = _("ANNA");
 const u8 gText_ClearAllSaveData[] = _("Clear all save data areas?");
 const u8 gText_ClearingData[] = _("Clearing data…\nPlease wait.");
 const u8 gText_IsThisTheCorrectTime[] = _("Is this the correct time?");
+const u8 gText_Set[] = _("SET");
 const u8 gText_Confirm3[] = _("CONFIRM");
 const u8 gText_Cancel4[] = _("CANCEL");
 const u8 gText_MrStoneMatchCallDesc[] = _("DEVON PRES");
