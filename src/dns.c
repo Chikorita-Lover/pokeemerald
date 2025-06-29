@@ -26,26 +26,24 @@
 /* Timelapses */
 enum
 {
-    TIME_MIDNIGHT,
     TIME_DAWN,
+    TIME_MORNING,
     TIME_DAY,
     TIME_SUNSET,
-    TIME_NIGHTFALL,
-    TIME_NIGHT
+    TIME_DUSK,
+    TIME_NIGHT,
 };
 
 /* End hours for each of the timelapses */
-#define MIDNIGHT_END_HOUR   7       //00 - 07
-#define DAWN_END_HOUR       8       //07 - 08
-#define DAY_END_HOUR        19      //08 - 19
-#define SUNSET_END_HOUR     20      //19 - 20
-#define NIGHTFALL_END_HOUR  21      //20 - 21
-#define NIGHT_END_HOUR      0       //21 - 00
+#define NIGHT_END_HOUR      6  //22 - 06
+#define DAWN_END_HOUR       8  //06 - 08
+#define MORNING_END_HOUR    10 //08 - 10
+#define DAY_END_HOUR        18 //10 - 18
+#define SUNSET_END_HOUR     20 //18 - 20
+#define NIGHTFALL_END_HOUR  22 //20 - 22
 
-/* Start and end hour of the lightning system.
- * This system is generally used for building's windows. */
-#define LIGHTNING_START_HOUR    NIGHTFALL_END_HOUR
-#define LIGHTNING_END_HOUR      MIDNIGHT_END_HOUR
+#define LIGHTNING_END_HOUR      DAWN_END_HOUR
+#define LIGHTNING_START_HOUR    19
 
 /* This array contains the colours used for the windows or          *
  * other tiles that have to be illuminated at night.                *
@@ -58,52 +56,52 @@ const struct LightingColor gLightingColours[] =
     {
         .paletteNum = 1,
         .colourNum = 9,
-        .lightColour = RGB2(31, 31, 21),
+        .lightColour = RGB2(31, 31, 23),
     },
     {
         .paletteNum = 1,
         .colourNum = 10,
-        .lightColour = RGB2(30, 30, 10),
+        .lightColour = RGB2(30, 25, 10),
     },
     {
         .paletteNum = 6,
         .colourNum = 9,
-        .lightColour = RGB2(31, 31, 21),
+        .lightColour = RGB2(31, 31, 23),
     },
     {
         .paletteNum = 6,
         .colourNum = 10,
-        .lightColour = RGB2(30, 30, 10),
+        .lightColour = RGB2(30, 25, 10),
     },
     {
         .paletteNum = 8,
         .colourNum = 9,
-        .lightColour = RGB2(31, 31, 21),
+        .lightColour = RGB2(31, 31, 23),
     },
     {
         .paletteNum = 8,
         .colourNum = 10,
-        .lightColour = RGB2(30, 30, 10),
+        .lightColour = RGB2(30, 25, 10),
     },
     {
         .paletteNum = 9,
         .colourNum = 9,
-        .lightColour = RGB2(31, 31, 21),
+        .lightColour = RGB2(31, 31, 23),
     },
     {
         .paletteNum = 9,
         .colourNum = 10,
-        .lightColour = RGB2(30, 30, 10),
+        .lightColour = RGB2(30, 25, 10),
     },
     {
         .paletteNum = 10,
         .colourNum = 9,
-        .lightColour = RGB2(31, 31, 21),
+        .lightColour = RGB2(31, 31, 23),
     },
     {
         .paletteNum = 10,
         .colourNum = 10,
-        .lightColour = RGB2(30, 30, 10),
+        .lightColour = RGB2(30, 25, 10),
     },
 };
 
@@ -169,10 +167,10 @@ const struct DnsPalExceptions gCombatPalExceptions =
         DNS_PAL_EXCEPTION,  //5
         DNS_PAL_ACTIVE,     //6
         DNS_PAL_ACTIVE,     //7
-        DNS_PAL_ACTIVE,     //8
-        DNS_PAL_ACTIVE,     //9
-        DNS_PAL_ACTIVE,     //10
-        DNS_PAL_ACTIVE,     //11
+        DNS_PAL_EXCEPTION,  //8
+        DNS_PAL_EXCEPTION,  //9
+        DNS_PAL_EXCEPTION,  //10
+        DNS_PAL_EXCEPTION,  //11
         DNS_PAL_ACTIVE,     //12
         DNS_PAL_ACTIVE,     //13
         DNS_PAL_ACTIVE,     //14
@@ -195,7 +193,6 @@ const struct DnsPalExceptions gCombatPalExceptions =
         DNS_PAL_EXCEPTION,  //31
     }
 };
-
 
   /*******************************************************/
  /*************    DNS Colour Filters     ***************/
@@ -222,138 +219,73 @@ const struct DnsPalExceptions gCombatPalExceptions =
  * This is more noticeable with the darker filters.     *
  */
 
-/* Filters used at midnight.                    *
- * From 00:00 to 01:00 filters are cycled every *
- * 8 minutes.                                   *
- * From 01:00 to 07:00 the last filter is used. */
-const u16 gMidnightFilters[] =
-{
-    RGB2(14, 14, 6),    //CE19
-    RGB2(14, 14, 7),    //CE1D
-    RGB2(14, 14, 8),    //CE21
-    RGB2(15, 15, 8),    //EF21
-    RGB2(15, 15, 9),    //EF25
-    RGB2(15, 15, 9),    //EF25
-    RGB2(16, 16, 9),    //1026
-    RGB2(16, 16, 10),   //102A
-};
-
-/* Filters used at dawn. (30 filters).          *
- * From 07:00 to 08:00 filters are cycled every *
- * 2 minutes.                                   */
 const u16 gDawnFilters[] =
 {
-    RGB2(15, 15, 10),
-    RGB2(15, 15, 10),   //1
-    RGB2(14, 14, 10),   //2
-    RGB2(13, 13, 10),   //3
-    RGB2(12, 12, 10),   //4
-    RGB2(11, 11, 10),   //5
-    RGB2(10, 10, 10),   //6
-    RGB2(9, 9, 10),     //7
-    RGB2(8, 8, 10),     //8
-    RGB2(8, 8, 11),     //9
-    RGB2(7, 7, 11),     //10
-    RGB2(6, 6, 11),     //11
-    RGB2(5, 5, 11),     //12
-    RGB2(4, 4, 11),     //13
-    RGB2(3, 3, 11),     //14
-    RGB2(2, 2, 11),     //15
-    RGB2(1, 1, 11),     //16
-    RGB2(0, 0, 11),     //17
-    RGB2(0, 0, 10),     //18
-    RGB2(0, 0, 9),      //19
-    RGB2(0, 0, 8),      //20
-    RGB2(0, 0, 7),      //21
-    RGB2(0, 0, 6),      //22
-    RGB2(0, 0, 5),      //23
-    RGB2(0, 0, 4),      //24
-    RGB2(0, 0, 3),      //0003
-    RGB2(0, 0, 2),      //0002
-    RGB2(0, 0, 1),      //0001
-    RGB2(0, 0, 0),      //0000
-    RGB2(0, 0, 0),      //0000
+    RGB2(12, 12, 0),
+    RGB2(10, 11, 0),
+    RGB2(9, 10, 0),
+    RGB2(7, 10, 1),
+    RGB2(6, 9, 1),
+    RGB2(4, 8, 1),
+    RGB2(2, 7, 1),
+    RGB2(1, 6, 1),
+    RGB2(0, 6, 2),
+    RGB2(0, 5, 2),
+    RGB2(0, 4, 2),
+    RGB2(0, 3, 2),
+    RGB2(0, 2, 2),
+    RGB2(0, 2, 3),
+    RGB2(0, 1, 3),
 };
 
-/* Filters used at day. (no filter actually lul)*/
-const u16 gDayFilter = RGB2(0, 0, 0);   //0000
+const u16 gMorningFilters[] =
+{
+    RGB2(0, 0, 3),
+    RGB2(0, 0, 2),
+    RGB2(0, 0, 1),
+};
 
-/* Filters used at sunset. (30 filters).        *
- * From 19:00 to 20:00 filters are cycled every *
- * 2 minutes.                                   */
+const u16 gDayFilter = RGB2(0, 0, 0);
+
 const u16 gSunsetFilters[] = 
 {
-    RGB2(0, 0, 1),      //0004
-    RGB2(0, 1, 1),      //2004
-    RGB2(0, 1, 2),      //2008
-    RGB2(0, 1, 3),      //200C
-    RGB2(0, 2, 3),      //400C
-    RGB2(0, 2, 4),      //4010
-    RGB2(0, 2, 5),      //4014
-    RGB2(0, 3, 5),      //6014
-    RGB2(0, 3, 6),      //6018
-    RGB2(0, 3, 7),      //601C
-    RGB2(0, 4, 7),      //801C
-    RGB2(0, 4, 8),      //8020
-    RGB2(0, 4, 9),      //8024
-    RGB2(0, 5, 9),      //A024
-    RGB2(0, 5, 10),     //A028
-    RGB2(0, 5, 11),     //A02C
-    RGB2(0, 6, 11),     //C02C
-    RGB2(0, 6, 12),     //C030
-    RGB2(0, 6, 13),     //C034
-    RGB2(0, 7, 13),     //E034
-    RGB2(0, 7, 14),     //E038
-    RGB2(0, 7, 14),     //E038
-    RGB2(0, 8, 14),     //0039
-    RGB2(0, 9, 14),     //2039
-    RGB2(0, 10, 14),    //4039
-    RGB2(0, 11, 14),    //6039
-    RGB2(0, 12, 14),    //8039
-    RGB2(0, 13, 14),    //A039
-    RGB2(0, 14, 14),    //C039
-    RGB2(0, 14, 14),    //C039
+    RGB2(0, 0, 0),
+    RGB2(0, 1, 1),
+    RGB2(0, 1, 1),
+    RGB2(0, 2, 2),
+    RGB2(0, 2, 3),
+    RGB2(0, 3, 3),
+    RGB2(0, 3, 4),
+    RGB2(0, 4, 5),
+    RGB2(0, 4, 5),
+    RGB2(0, 5, 6),
+    RGB2(0, 5, 7),
+    RGB2(0, 6, 7),
+    RGB2(0, 6, 8),
+    RGB2(0, 7, 9),
+    RGB2(0, 7, 9),
 };
 
-/* Filters used at nightfall. (30 filters).     *
- * From 20:00 to 21:00 filters are cycled every *
- * 2 minutes.                                   */
-const u16 gNightfallFilters[] = 
+const u16 gDuskFilters[] = 
 {
-    RGB2(0, 14, 14),    //39C0
-    RGB2(0, 14, 14),    //39C0
-    RGB2(0, 14, 13),    //35C0
-    RGB2(0, 14, 12),    //31C0
-    RGB2(0, 14, 11),    //2DC0
-    RGB2(0, 14, 10),    //29C0
-    RGB2(1, 14, 10),    //29C1
-    RGB2(1, 14, 9),     //25C1
-    RGB2(0, 14, 8),     //21C0
-    RGB2(1, 14, 7),     //1DC1
-    RGB2(1, 14, 6),     //19C1
-    RGB2(2, 14, 6),     //19C2
-    RGB2(2, 14, 5),     //15C2
-    RGB2(2, 14, 4),     //11C2
-    RGB2(2, 14, 3),     //0DC2
-    RGB2(2, 14, 2),     //09C2
-    RGB2(2, 14, 2),     //09C2
-    RGB2(3, 14, 3),     //0DC3
-    RGB2(4, 14, 4),     //11C4
-    RGB2(5, 14, 5),     //15C5
-    RGB2(6, 14, 6),     //19C6
-    RGB2(7, 14, 6),     //19C7
-    RGB2(8, 14, 6),     //19C8
-    RGB2(9, 14, 6),     //19C9
-    RGB2(10, 14, 6),    //19CA
-    RGB2(11, 14, 6),    //19CB
-    RGB2(12, 14, 6),    //19CC
-    RGB2(13, 14, 6),    //19CD
-    RGB2(14, 14, 6),    //19CE
-    RGB2(14, 14, 6),    //19CE
+    RGB2(0, 8, 10),
+    RGB2(1, 8, 9),
+    RGB2(2, 9, 9),
+    RGB2(2, 9, 8),
+    RGB2(3, 9, 7),
+    RGB2(4, 9, 7),
+    RGB2(5, 10, 6),
+    RGB2(6, 10, 5),
+    RGB2(6, 10, 5),
+    RGB2(7, 10, 4),
+    RGB2(8, 11, 3),
+    RGB2(9, 11, 3),
+    RGB2(10, 11, 2),
+    RGB2(10, 11, 1),
+    RGB2(11, 12, 1),
 };
 
-/* Filter used at night. From 21:00 to 24:00 */
-const u16 gNightFilter = RGB2(14, 14, 6);   //19CE
+const u16 gNightFilter = RGB2(12, 12, 0);
 
 /*************   SpritePalette Dns exceptions by TAG   **************
  * If you are using any dynamic sprite palette allocation system,   *
@@ -464,29 +396,22 @@ static u16 DnsApplyProportionalFilterToColour(u16 color, u16 filter)
 //returns the filter to use depending on RTC time.
 static u16 GetDNSFilter()
 {
-    u8 hour = gLocalTime.hours;    
-    u8 minutes = gLocalTime.minutes;   
+    u8 hour = gLocalTime.hours;
+    u8 minutes = gLocalTime.minutes;
+    u8 time = hour % 2 * 60 + minutes;
 
     switch(GetDnsTimeLapse(hour))
     {
-        case TIME_MIDNIGHT:
-            if (hour < 1)
-                return gMidnightFilters[minutes >> 3];            
-            else
-                return gMidnightFilters[7];
-
         case TIME_DAWN:
-            return gDawnFilters[minutes >> 1];
-
+            return gDawnFilters[time >> 3];
+        case TIME_MORNING:
+            return gMorningFilters[time >> 5];
         case TIME_DAY:
             return gDayFilter;
-
-        case TIME_SUNSET: 
-            return gSunsetFilters[minutes >> 1];
-
-        case TIME_NIGHTFALL:
-            return gNightfallFilters[minutes >> 1];
-
+        case TIME_SUNSET:
+            return gSunsetFilters[time >> 3];
+        case TIME_DUSK:
+            return gDuskFilters[time >> 3];
         case TIME_NIGHT:
             return gNightFilter;
     }
@@ -520,16 +445,18 @@ static void DoDnsLightning()
 //Returns Dns time lapse
 u8 GetDnsTimeLapse(u8 hour)
 {
-    if (hour < MIDNIGHT_END_HOUR)
-        return TIME_MIDNIGHT;
+    if (hour < NIGHT_END_HOUR)
+        return TIME_NIGHT;
     else if (hour < DAWN_END_HOUR)
         return TIME_DAWN;
+    else if (hour < MORNING_END_HOUR)
+        return TIME_MORNING;
     else if (hour < DAY_END_HOUR)
         return TIME_DAY;
     else if (hour < SUNSET_END_HOUR)
         return TIME_SUNSET;
     else if (hour < NIGHTFALL_END_HOUR)
-        return TIME_NIGHTFALL;
+        return TIME_DUSK;
     else 
         return TIME_NIGHT;
 }
