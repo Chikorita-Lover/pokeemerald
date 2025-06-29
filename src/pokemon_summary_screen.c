@@ -3408,7 +3408,7 @@ static void PrintRightColumnStats(void)
 static void PrintLeftColumnString(const u8 *string, u8 y, s8 natureMod)
 {
     int statsXPos = 6 + GetStringCenterAlignXOffset(FONT_NORMAL, string, 42);
-    u8 colorId = natureMod > 0 ? 0x6 : natureMod < 0 ? 0x7 : 0x1;
+    u8 colorId = natureMod > 0 ? 6 : natureMod < 0 ? 5 : 1;
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT, string, statsXPos, y, 0, colorId);
 }
 
